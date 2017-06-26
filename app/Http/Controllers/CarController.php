@@ -54,7 +54,6 @@ class CarController extends Controller
 
     public function show(Car $car, Request $request)
     {
-        $this->canAccess($car, $request);
         $reminders = $car->reminders()->get();
 
         return view('cars.show', ['car' => $car, 'reminders' => $reminders]);
@@ -63,7 +62,6 @@ class CarController extends Controller
 
     public function edit(Car $car, Request $request)
     {
-        $this->canAccess($car, $request);
 
         return view('cars.edit', [
             'car' => $car
@@ -72,7 +70,6 @@ class CarController extends Controller
 
     public function update(Car $car, Request $request)
     {
-        $this->canAccess($car, $request);
 
         $this->validate($request, [
             'brand' => 'required',
@@ -99,26 +96,15 @@ class CarController extends Controller
 
     public function delete_form(Car $car, Request $request)
     {
-        $this->canAccess($car, $request);
-
         return view('cars.delete_confirmation', ['car' => $car]);
     }
 
     public function delete(Car $car, Request $request)
     {
-        $this->canAccess($car, $request);
-
         $car->deleted = true;
         $car->save();
 
         return redirect(route('cars'));
     }
 
-    protected function canAccess(Car $car, Request $request)
-    {
-        return;
-        if (!$request->user()->can('view', $car)) {
-            abort(404);
-        }
-    }
 }
